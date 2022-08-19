@@ -3,12 +3,25 @@ import { Card, Suite, Rank } from "./Card";
 export class DeckOfCards {
 
   public deck: Card[] = [];
-  suites: Suite[] = [];
-  ranks: Rank[] = []
+  suites: Suite[] = ["clubs", "diamonds", "hearts", "spades"];
+  ranks: Rank[] = [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K",
+    "A",
+  ];
 
-  constructor(suites: Suite[], ranks: Rank[]) {
-    this.suites = suites;
-    this.ranks = ranks;
+
+  constructor() {
     this.buildDeck();
   }
 
