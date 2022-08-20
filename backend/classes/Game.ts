@@ -4,7 +4,7 @@ import { User } from "./User";
 export class Game {
 
   private _gameCode: string;
-  private _deck: DeckOfCards = new DeckOfCards();
+  private _deckOfCards: DeckOfCards = new DeckOfCards();
   private _users: User[] = [];
 
   constructor(gameCode?: string) {
@@ -28,10 +28,10 @@ export class Game {
   }
 
   public get deck(): DeckOfCards {
-    return this._deck;
+    return this._deckOfCards;
   }
   public set deck(value: DeckOfCards) {
-    this._deck = value;
+    this._deckOfCards = value;
   }
 
 

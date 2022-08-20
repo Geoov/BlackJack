@@ -70,11 +70,11 @@ export function socketRoutes(app, io) {
       }
 
       io.emit("gameUsers", {
-        gameUsers: game.users,
+        _gameUsers: game.users,
       });
     });
 
-    socket.on("toggleReadyState", async (data) => {
+    socket.on("toggleReadyState", (data) => {
       if (!data.id) {
         universalError("This user doesn't exists");
         return;
@@ -95,9 +95,27 @@ export function socketRoutes(app, io) {
       user.ready = data.readyState;
 
       io.emit("gameUsers", {
-        gameUsers: game.users,
+        _gameUsers: game.users,
       });
     });
+
+    socket.on("startGame", (data) => {
+      if (!(game.gameCode == data.gameCode)) {
+        universalError("The game hasn't been created");
+
+        game.users.forEach((u) => u.ready = false)
+        io.emit("gameUsers", {
+          _gameUsers: game.users,
+        });
+
+        return;
+      }
+
+      io.emit("startedGame", {
+        _game: game
+      })
+
+    })
 
 
 
