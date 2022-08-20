@@ -6,7 +6,7 @@ import UserCard from "../UserCard/UserCard";
 
 const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-const Lobby = ({ currentGameCode }) => {
+const Lobby = ({ currentGameCode, onStartedGame }) => {
   const socket = useContext(SocketContext);
   const reduxGameCode = useSelector((state) => state.game.gameId);
   const [users, setUsers] = useState([]);
@@ -18,25 +18,50 @@ const Lobby = ({ currentGameCode }) => {
 
   useEffect(() => {
     socket.on("gameUsers", (data) => {
-      if (!equals(users, data.gameUsers)) {
-        setUsers(data.gameUsers);
+      if (!equals(users, data._gameUsers)) {
+        setUsers(data._gameUsers);
       }
     });
   }, [users]);
 
-  useEffect(() => {
-    console.log(users);
-  }, [users]);
-
   const toggleReadyState = (index, isReady) => {
-    console.log(users);
     socket.emit("toggleReadyState", {
-      index,
       id: users[index]._id,
       gameCode: reduxGameCode,
       readyState: !isReady,
     });
   };
+
+  useEffect(() => {
+    let allPlayersReady = true;
+    users.find((user) => {
+      if (user._ready === false) {
+        allPlayersReady = false;
+        return;
+      }
+    });
+
+    if (allPlayersReady && users.length > 1) startGame();
+  }, [users]);
+
+  const startGame = () => {
+    // onStartedGame();
+    socket.emit("startGame", {
+      gameCode: reduxGameCode,
+    });
+  };
+
+  useEffect(() => {
+    socket.on("startedGame", (data) => {
+      console.log(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("universalError", (data) => {
+      alert(data.message);
+    });
+  }, []);
 
   return (
     <div className="lobby-page-wrapper">

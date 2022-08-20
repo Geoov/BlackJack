@@ -12,13 +12,6 @@ const UserCard = ({ id, index, name, isReady, updateIsReady }) => {
   return (
     <div className="user-card">
       <p>{reduxUserId}</p>
-      <p>
-        {index === 0 ? (
-          <button>{id === reduxUserId && true ? "start" : "stop"}</button>
-        ) : (
-          ""
-        )}
-      </p>
       <p className="name mb-0">{name}</p>
       {id === reduxUserId ? (
         <span>

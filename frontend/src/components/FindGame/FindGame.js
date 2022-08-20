@@ -33,12 +33,6 @@ function FindGame({ onJoinedGame }) {
     });
   }, []);
 
-  useEffect(() => {
-    socket.on("universalError", (data) => {
-      alert(data.message);
-    });
-  }, []);
-
   const joinGame = async () => {
     if (!nickName || !gameCode) return;
 
@@ -50,6 +44,12 @@ function FindGame({ onJoinedGame }) {
 
     socket.emit("createGame", { nickName });
   };
+
+  useEffect(() => {
+    socket.on("universalError", (data) => {
+      alert(data.message);
+    });
+  }, []);
 
   return (
     <div className="find-game-page-wrapper">
