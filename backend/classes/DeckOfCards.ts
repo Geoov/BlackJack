@@ -2,9 +2,9 @@ import { Card, Suite, Rank } from "./Card";
 
 export class DeckOfCards {
 
-  public deck: Card[] = [];
-  suites: Suite[] = ["clubs", "diamonds", "hearts", "spades"];
-  ranks: Rank[] = [
+  public _deck: Card[] = [];
+  _suites: Suite[] = ["clubs", "diamonds", "hearts", "spades"];
+  _ranks: Rank[] = [
     "2",
     "3",
     "4",
@@ -26,37 +26,37 @@ export class DeckOfCards {
   }
 
   buildDeck() {
-    this.ranks.forEach(rank => {
-      this.suites.forEach(suite => {
-        this.deck.push(new Card(rank, suite));
+    this._ranks.forEach(rank => {
+      this._suites.forEach(suite => {
+        this._deck.push(new Card(rank, suite));
       })
     })
   }
 
   getDeck() {
-    return this.deck;
+    return this._deck;
   }
 
   drawCard() {
-    if (this.deck.length == 0)
+    if (this._deck.length == 0)
       return -1;
 
-    return this.deck.pop();
+    return this._deck.pop();
   }
 
   shuffleDeck() {
-    let currentIndex = this.deck.length, randomIndex;
+    let currentIndex = this._deck.length, randomIndex;
 
     while (currentIndex != 0) {
 
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
 
-      [this.deck[currentIndex], this.deck[randomIndex]] = [
-        this.deck[randomIndex], this.deck[currentIndex]];
+      [this._deck[currentIndex], this._deck[randomIndex]] = [
+        this._deck[randomIndex], this._deck[currentIndex]];
     }
 
-    return this.deck;
+    return this._deck;
 
   }
 
