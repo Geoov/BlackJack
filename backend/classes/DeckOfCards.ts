@@ -2,7 +2,7 @@ import { Card, Suite, Rank } from "./Card";
 
 export class DeckOfCards {
 
-  public _deck: Card[] = [];
+  private _deck: Card[] = [];
   _suites: Suite[] = ["clubs", "diamonds", "hearts", "spades"];
   _ranks: Rank[] = [
     "2",
@@ -33,13 +33,13 @@ export class DeckOfCards {
     })
   }
 
-  getDeck() {
+  public get deck(): Card[] {
     return this._deck;
   }
 
   drawCard() {
     if (this._deck.length == 0)
-      return -1;
+      return;
 
     return this._deck.pop();
   }

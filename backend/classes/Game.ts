@@ -27,10 +27,10 @@ export class Game {
     this._users = value;
   }
 
-  public get deck(): DeckOfCards {
+  public get deckOfCards(): DeckOfCards {
     return this._deckOfCards;
   }
-  public set deck(value: DeckOfCards) {
+  public set deckOfCards(value: DeckOfCards) {
     this._deckOfCards = value;
   }
 
