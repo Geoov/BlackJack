@@ -4,47 +4,105 @@ import { useSelector } from "react-redux";
 import "./Game.scss";
 import GameCard from "../GameCard/GameCard";
 
+const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
 function Game() {
   const socket = useContext(SocketContext);
+  const reduxGameCode = useSelector((state) => state.game.gameId);
   const reduxUserId = useSelector((state) => state.user.userId);
-  const [cards, setCards] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [currentUserIndex, setCurrenUserIndex] = useState(-1);
+
+  useEffect(() => {
+    socket.emit("startGame", {
+      gameCode: reduxGameCode,
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("gameUsers", (data) => {
+      if (!equals(users, data._gameUsers)) {
+        setUsers(data._gameUsers);
+      }
+    });
+    console.log(users);
+    setCurrenUserIndex(users.findIndex((user) => user._id === reduxUserId));
+  }, [users]);
 
   const drawCard = (id) => {
-    let tempCards = [
-      { _suite: "clubs", _rank: "3" },
-      { _suite: "diamonds", _rank: "10" },
-      { _suite: "hearts", _rank: "A" },
-      { _suite: "spades", _rank: "Q" },
-    ];
-    setCards(tempCards);
+    socket.emit("drawCard", {
+      id,
+    });
   };
 
   const stopDrawing = (id) => {
-    console.log("stop drawing");
+    socket.emit("stopDrawing", {
+      id,
+    });
   };
+
+  useEffect(() => {
+    socket.on("universalError", (data) => {
+      console.error(data.message);
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("finished", () => {
+      console.error("You can't draw any more cards");
+    });
+  });
 
   return (
     <div className="game-page-wrapper">
       <div id="player-one-board" className="player-board-wrapper">
-        {cards.map((card, index) => {
-          return (
-            <GameCard
-              key={index}
-              index={index}
-              suite={card._suite}
-              rank={card._rank}
-              show={true}
-            />
-          );
-        })}
+        {users[0] &&
+          users[0]._cards &&
+          users[0]._cards.map((card, index) => {
+            return (
+              <GameCard
+                key={index}
+                index={index}
+                suite={card._suite}
+                rank={card._rank}
+                show={users[0]._id === reduxUserId || card.rank === "A"}
+              />
+            );
+          })}
       </div>
 
       <div className="draw-card-wrapper">
-        <button onClick={() => drawCard("b3")}>Draw card</button>
-        <button onClick={() => stopDrawing("b3")}>Stop drawing</button>
+        {currentUserIndex !== -1 && (
+          <>
+            <p>Score: {users[currentUserIndex]._score}</p>
+            <p>
+              Status:{" "}
+              {users[currentUserIndex]._finished === false
+                ? "Playing"
+                : "Finished"}
+            </p>
+          </>
+        )}
+        <p>CurrentPlayer: {reduxUserId}</p>
+        <button onClick={() => drawCard(reduxUserId)}>Draw card</button>
+        <button onClick={() => stopDrawing(reduxUserId)}>Stop drawing</button>
       </div>
 
-      <div id="player-two-board" className="player-board-wrapper"></div>
+      <div id="player-two-board" className="player-board-wrapper">
+        {users[1] &&
+          users[1]._cards &&
+          users[1]._cards.map((card, index) => {
+            return (
+              <GameCard
+                key={index}
+                index={index}
+                suite={card._suite}
+                rank={card._rank}
+                show={users[1]._id === reduxUserId || card.rank === "A"}
+              />
+            );
+          })}
+      </div>
     </div>
   );
 }

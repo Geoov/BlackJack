@@ -45,17 +45,8 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
   }, [users]);
 
   const startGame = () => {
-    // onStartedGame();
-    socket.emit("startGame", {
-      gameCode: reduxGameCode,
-    });
+    onStartedGame();
   };
-
-  useEffect(() => {
-    socket.on("startedGame", (data) => {
-      console.log(data);
-    });
-  }, []);
 
   useEffect(() => {
     socket.on("universalError", (data) => {

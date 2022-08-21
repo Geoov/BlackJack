@@ -32,10 +32,10 @@ const GameCard = ({ index, suite, rank, show }) => {
 
   return (
     <div
-      className={`${!show ? "game-card" : "game-card-hidden"}`}
+      className={`${show ? "game-card" : "game-card-hidden"}`}
       style={{
         color: color,
-        border: !show ? "3px solid " + color : "3px solid #8a8a8a",
+        border: show ? "3px solid " + color : "3px solid #8a8a8a",
       }}
     >
       <div className="up-section">
@@ -46,8 +46,8 @@ const GameCard = ({ index, suite, rank, show }) => {
         <span dangerouslySetInnerHTML={{ __html: `${symbol}` }} />
       </div>
       <div className="down-section">
-        <span dangerouslySetInnerHTML={{ __html: `${symbol}` }} />
         <span>{rank}</span>
+        <span dangerouslySetInnerHTML={{ __html: `${symbol}` }} />
       </div>
     </div>
   );
