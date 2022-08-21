@@ -1,17 +1,19 @@
+@import "../../assets/styles/mixins";
+@import "../../assets/styles/variables";
+
 .find-game-page-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  @include full-row-direction;
+  @include align-center-hv;
   height: 100%;
 
   .card-wrapper {
-    display: flex;
-    flex-direction: column;
+    @include column-direction;
     justify-content: space-around;
     align-items: center;
     width: 500px;
     height: 75%;
-    background-color: lightgrey;
+    background-color: $background-color;
+    border: 1px solid #30363d;
+    border-radius: 6px;
   }
 }

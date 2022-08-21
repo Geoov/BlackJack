@@ -1,12 +1,10 @@
 @import "~bootstrap/scss/bootstrap";
+@import "../src/assets/styles/mixins";
+@import "../src/assets/styles/variables";
 
 .App {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: 100%;
+  @include full-column-direction;
+  @include reset-margins-paddings;
   height: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: darkgrey;
+  background-color: $background-color;
 }

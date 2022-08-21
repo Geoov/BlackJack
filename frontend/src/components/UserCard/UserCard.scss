@@ -1,6 +1,8 @@
+@import "../../assets/styles/mixins";
+@import "../../assets/styles/variables";
+
 .user-card {
-  display: flex;
-  flex-direction: row;
+  @include row-direction;
   justify-content: space-between;
   width: 40%;
   padding: 30px 10px;
