@@ -8,22 +8,18 @@ const GameCard = ({ index, suite, rank, show }) => {
   useEffect(() => {
     switch (suite) {
       case "hearts":
-        console.log("hearts");
         setSymbol("&hearts;");
         setColor("red");
         break;
       case "diamonds":
-        console.log("diamonds");
         setSymbol("&diams;");
         setColor("red");
         break;
       case "clubs":
-        console.log("clubs");
         setSymbol("&clubs;");
         setColor("black");
         break;
       case "spades":
-        console.log("spades");
         setSymbol("&spades;");
         setColor("black");
         break;
@@ -39,14 +35,14 @@ const GameCard = ({ index, suite, rank, show }) => {
       }}
     >
       <div className="up-section">
-        <span>{rank}</span>
+        <span>{show ? rank: '?'}</span>
         <span dangerouslySetInnerHTML={{ __html: `${symbol}` }} />
       </div>
       <div className="middle-section">
         <span dangerouslySetInnerHTML={{ __html: `${symbol}` }} />
       </div>
       <div className="down-section">
-        <span>{rank}</span>
+        <span>{show ? rank: '?'}</span>
         <span dangerouslySetInnerHTML={{ __html: `${symbol}` }} />
       </div>
     </div>

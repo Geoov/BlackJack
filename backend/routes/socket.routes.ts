@@ -107,16 +107,6 @@ export function socketRoutes(app, io) {
         return;
       }
 
-      game.users = [];
-
-      let user1 = new User('tt', 'test1');
-      user1.ready = true;
-      let user2 = new User('qq', 'test2');
-      user2.ready = true;
-
-      game.users.push(user1);
-      game.users.push(user2);
-
       io.emit("gameUsers", {
         _gameUsers: game.users
       })

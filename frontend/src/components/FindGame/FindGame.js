@@ -21,26 +21,24 @@ function FindGame({ onJoinedGame }) {
 
   useEffect(() => {
     socket.on("createdGame", (data) => {
-      console.log("createdGame", data);
       onJoinedGame(data);
     });
   }, []);
 
   useEffect(() => {
     socket.on("joinedGame", (data) => {
-      console.log("joinedGame", data);
       onJoinedGame(data);
     });
   }, []);
 
   const joinGame = async () => {
-    if (!nickName || !gameCode) return;
+    if (!nickName || !gameCode) console.error('missing nickName or gameCode');
 
     socket.emit("joinGame", { nickName, gameCode });
   };
 
   const createGame = () => {
-    if (!nickName) return;
+    if (!nickName) console.error('missing nickName');
 
     socket.emit("createGame", { nickName });
   };

@@ -25,7 +25,6 @@ function Game() {
         setUsers(data._gameUsers);
       }
     });
-    console.log(users);
     setCurrenUserIndex(users.findIndex((user) => user._id === reduxUserId));
   }, [users]);
 
@@ -65,7 +64,11 @@ function Game() {
                 index={index}
                 suite={card._suite}
                 rank={card._rank}
-                show={users[0]._id === reduxUserId || card.rank === "A"}
+                show={
+                  (users[0]._finished && users[1]._finished) ||
+                  users[0]._id === reduxUserId ||
+                  card._rank === "A"
+                }
               />
             );
           })}
@@ -74,6 +77,7 @@ function Game() {
       <div className="draw-card-wrapper">
         {currentUserIndex !== -1 && (
           <>
+            <p>Score: {users[currentUserIndex]._nickName}</p>
             <p>Score: {users[currentUserIndex]._score}</p>
             <p>
               Status:{" "}
@@ -83,7 +87,7 @@ function Game() {
             </p>
           </>
         )}
-        <p>CurrentPlayer: {reduxUserId}</p>
+        <p>CurrentPlayerId: {reduxUserId}</p>
         <button onClick={() => drawCard(reduxUserId)}>Draw card</button>
         <button onClick={() => stopDrawing(reduxUserId)}>Stop drawing</button>
       </div>
@@ -98,7 +102,11 @@ function Game() {
                 index={index}
                 suite={card._suite}
                 rank={card._rank}
-                show={users[1]._id === reduxUserId || card.rank === "A"}
+                show={
+                  (users[0]._finished && users[1]._finished) ||
+                  users[1]._id === reduxUserId ||
+                  card._rank === "A"
+                }
               />
             );
           })}
