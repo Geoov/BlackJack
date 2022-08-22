@@ -1,6 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Card } from '../classes/Card';
-import { DeckOfCards } from '../classes/DeckOfCards';
 import { Game } from '../classes/Game';
 import { User } from '../classes/User';
 
@@ -18,11 +16,6 @@ export function socketRoutes(app, io) {
     socket.on('createGame', (data) => {
       if (!data.nickName) {
         universalError("NickName null");
-        return;
-      }
-
-      if (game.gameCode) {
-        universalError("Game already exist");
         return;
       }
 
@@ -128,7 +121,7 @@ export function socketRoutes(app, io) {
       }
 
       if (user.finished === true) {
-        socket.emit('finishedDrawing');
+        universalError("You can't draw any more cards");
         return;
       }
 
@@ -210,8 +203,6 @@ export function socketRoutes(app, io) {
         _results: result,
         _users: game.users
       })
-
-      game.gameCode = '';
 
     })
 
