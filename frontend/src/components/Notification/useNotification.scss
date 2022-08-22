@@ -1,0 +1,25 @@
+@import "../../assets/styles/variables";
+
+.MuiCollapse-root {
+  .MuiCollapse-wrapper {
+    .MuiCollapse-wrapperInner {
+      background-color: $background-color;
+
+      .SnackbarItem-wrappedRoot {
+        background-color: $background-color;
+
+        .SnackbarContent-root {
+          background-color: $light-purple;
+
+          .SnackbarItem-action svg {
+            color: white;
+          }
+
+          .SnackbarItem-message > svg {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

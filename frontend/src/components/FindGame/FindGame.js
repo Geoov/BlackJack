@@ -3,12 +3,13 @@ import { SocketContext } from "../../context/socket";
 import "./FindGame.scss";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import useNotification from "../Notification/useNotification";
 
 function FindGame({ onJoinedGame }) {
   const socket = useContext(SocketContext);
-
   const [nickName, setNickName] = useState("");
   const [gameCode, setGameCode] = useState("");
+  const [msg, sendNotification] = useNotification();
 
   const handleNickNameInputChange = (event) => {
     event.persist();
@@ -33,22 +34,32 @@ function FindGame({ onJoinedGame }) {
   }, []);
 
   const joinGame = async () => {
-    if (!nickName || !gameCode) console.error("missing nickName or gameCode");
+    if (!nickName || !gameCode) {
+      sendNotification({
+        msg: "NickName or GameCode is missing",
+      });
+    }
 
     socket.emit("joinGame", { nickName, gameCode });
   };
 
   const createGame = () => {
-    if (!nickName) console.error("missing nickName");
+    if (!nickName) {
+      sendNotification({
+        msg: "NickName is missing",
+      });
+    }
 
     socket.emit("createGame", { nickName });
   };
 
   useEffect(() => {
     socket.on("universalError", (data) => {
-      console.error(data.message);
+      sendNotification({
+        msg: data.message,
+      });
     });
-  }, []);
+  }, [socket]);
 
   return (
     <div className="find-game-page-wrapper">

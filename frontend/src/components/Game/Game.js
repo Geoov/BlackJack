@@ -5,6 +5,10 @@ import "./Game.scss";
 import GameCard from "../GameCard/GameCard";
 import Button from "@mui/material/Button";
 import BlackJackImage from "../../../src/assets/images/blackjackImage.png";
+import DrawCardSound from "../../../src/assets/audio/drawCard.mp3";
+import FinishGameSound from "../../../src/assets/audio/finishGame.wav";
+import BlackjackSound from "../../../src/assets/audio/blackjack.mp3";
+import useNotification from "../Notification/useNotification";
 
 const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -18,6 +22,10 @@ function Game() {
   const [showFireAnimation, setShowFireAnimation] = useState(false);
   const [result, setResult] = useState("");
   const imageRef = useRef(null);
+  const [drawCardAudio] = useState(new Audio(DrawCardSound));
+  const [blackjackAudio] = useState(new Audio(BlackjackSound));
+  const [finishGameAudio] = useState(new Audio(FinishGameSound));
+  const [msg, sendNotification] = useNotification();
 
   useEffect(() => {
     socket.emit("startGame", {
@@ -45,6 +53,7 @@ function Game() {
   }, [users]);
 
   const drawCard = (id) => {
+    drawCardAudio.play();
     socket.emit("drawCard", {
       id,
     });
@@ -56,17 +65,12 @@ function Game() {
     });
   };
 
-  useEffect(() => {
-    socket.on("finishedDrawing", () => {
-      console.error("You can't draw any more cards");
-    });
-  }, []);
-
   const gameIsFinished = () => {
     socket.emit("finishedGame");
   };
 
   const showBlackJack = () => {
+    blackjackAudio.play();
     imageRef.current.style.display = "flex";
 
     if (opacity < 1) {
@@ -92,30 +96,39 @@ function Game() {
     socket.on("gameFinished", (data) => {
       switch (data._results) {
         case "bothLose":
-          setResult("Both users LOST!!");
+          setResult("Both players LOST!!");
           break;
         case "bothWin":
-          setResult("Both users WON!!");
+          setResult("Both players WON!!");
           break;
         case "p1Win":
           setResult(
-            data._users[0]._nickName + " WON!! - " + data._users[0]._score
+            data._users[0]._nickName +
+              " WON!! - " +
+              data._users[0]._score +
+              " points"
           );
           break;
         case "p2Win":
           setResult(
-            data._users[1]._nickName + " WON!! - " + data._users[1]._score
+            data._users[1]._nickName +
+              " WON!! - " +
+              data._users[1]._score +
+              " points"
           );
           break;
       }
+      finishGameAudio.play();
     });
   }, [socket]);
 
   useEffect(() => {
     socket.on("universalError", (data) => {
-      console.error(data.message);
+      sendNotification({
+        msg: data.message,
+      });
     });
-  }, []);
+  }, [socket]);
 
   return (
     <div className="game-page-wrapper">

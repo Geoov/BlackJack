@@ -3,6 +3,8 @@ import { SocketContext } from "../../context/socket";
 import "./Lobby.scss";
 import UserCard from "../UserCard/UserCard";
 import horizontallyDecoration from "../../../src/assets/images/horizontallyDecoration.png";
+import CountDownSound from "../../../src/assets/audio/countdown.wav";
+import useNotification from "../Notification/useNotification";
 
 const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -10,9 +12,11 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
   const socket = useContext(SocketContext);
   const [users, setUsers] = useState([]);
   const [countdown, setCountdown] = useState("");
+  const [countdownAudio] = useState(new Audio(CountDownSound));
+  const [msg, sendNotification] = useNotification();
 
   useEffect(() => {
-    if (!currentGameCode) currentGameCode = "test";
+    if (!currentGameCode) return currentGameCode;
     socket.emit("getUsers", { gameCode: currentGameCode });
   }, [currentGameCode, socket]);
 
@@ -50,6 +54,8 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
 
   const modifyTimer = (countdown) => {
     setCountdown(countdown);
+    countdownAudio.play();
+
     if (countdown === "START!") {
       setTimeout(() => onStartedGame(), 1000);
     }
@@ -65,9 +71,11 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
 
   useEffect(() => {
     socket.on("universalError", (data) => {
-      console.error(data.message);
+      sendNotification({
+        msg: data.message,
+      });
     });
-  }, []);
+  }, [socket]);
 
   return (
     <div className="lobby-page-wrapper">

@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import "./UserCard.scss";
+import ToggleReadySound from "../../../src/assets/audio/toggleReady.wav";
 
 const UserCard = ({ id, index, name, isReady, updateIsReady }) => {
   const reduxUserId = useSelector((state) => state.user.userId);
+  const [toggleReadyAudio] = useState(new Audio(ToggleReadySound));
 
   const changeReadyState = (event) => {
     updateIsReady(index, isReady);
+    toggleReadyAudio.play();
   };
 
   return (
