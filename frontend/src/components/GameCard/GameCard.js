@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./GameCard.scss";
 import cornerDecoration from "../../../src/assets/images/cornerDecoration.png";
 import horizontallyDecoration from "../../../src/assets/images/horizontallyDecoration.png";
+import FireAnimation from "../FireAnimation/FireAnimation";
 
-const GameCard = ({ index, suite, rank, show }) => {
+const GameCard = ({ index, suite, rank, show, showFire }) => {
   const [color, setColor] = useState("");
   const [symbol, setSymbol] = useState("");
 
@@ -30,6 +31,11 @@ const GameCard = ({ index, suite, rank, show }) => {
 
   return (
     <div className="outer-border">
+      {showFire === true && (
+        <div className="fire-animation-wrapper">
+          <FireAnimation></FireAnimation>
+        </div>
+      )}
       <div className="mid-border">
         <div className="inner-border">
           <img

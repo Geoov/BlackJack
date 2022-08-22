@@ -50,6 +50,22 @@
         align-items: center;
         height: 100%;
         padding: 100px 0;
+        position: relative;
+
+        .full-screen-seconds {
+          position: absolute;
+          @include row-direction;
+          @include align-center-hv;
+          top: 36.4%;
+          background-color: transparent;
+
+          h1 {
+            font-size: 201px;
+            margin-bottom: 0;
+            color: $light-purple;
+            background-color: transparent;
+          }
+        }
 
         .game-code-wrapper {
           @include row-direction;

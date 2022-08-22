@@ -9,6 +9,7 @@ const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const Lobby = ({ currentGameCode, onStartedGame }) => {
   const socket = useContext(SocketContext);
   const [users, setUsers] = useState([]);
+  const [countdown, setCountdown] = useState("");
 
   useEffect(() => {
     if (!currentGameCode) currentGameCode = "test";
@@ -44,8 +45,23 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
   }, [users]);
 
   const startGame = () => {
-    onStartedGame();
+    modifyTimer("3");
   };
+
+  const modifyTimer = (countdown) => {
+    setCountdown(countdown);
+    if (countdown === "START!") {
+      setTimeout(() => onStartedGame(), 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (countdown > 0) {
+      setTimeout(() => modifyTimer(parseInt(countdown, 10) - 1), 1000);
+    } else if (countdown === 0) {
+      setTimeout(() => modifyTimer("START!"), 1000);
+    }
+  }, [countdown]);
 
   useEffect(() => {
     socket.on("universalError", (data) => {
@@ -67,6 +83,11 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
           ></img>
 
           <div className="lobby-content-wrapper">
+            {(countdown || countdown >= 0) && (
+              <div className="full-screen-seconds">
+                <h1>{countdown}</h1>
+              </div>
+            )}
             <div className="game-code-wrapper">
               <p>Gamecode: {currentGameCode}</p>
             </div>

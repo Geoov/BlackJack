@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { SocketContext } from "../../context/socket";
 import { useSelector } from "react-redux";
 import "./Game.scss";
 import GameCard from "../GameCard/GameCard";
 import Button from "@mui/material/Button";
+import BlackJackImage from "../../../src/assets/images/blackjackImage.png";
 
 const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 function Game() {
   const socket = useContext(SocketContext);
-  const reduxGameCode = useSelector((state) => state.game.gameId) || "test";
-  const reduxUserId = useSelector((state) => state.user.userId) || "tt";
+  const reduxGameCode = useSelector((state) => state.game.gameId);
+  const reduxUserId = useSelector((state) => state.user.userId);
   const [users, setUsers] = useState([]);
   const [currentUserIndex, setCurrenUserIndex] = useState(-1);
+  const [opacity, setOpacity] = useState(0);
+  const [showFireAnimation, setShowFireAnimation] = useState(false);
+  const [result, setResult] = useState("");
+  const imageRef = useRef(null);
 
   useEffect(() => {
     socket.emit("startGame", {
@@ -57,32 +62,54 @@ function Game() {
     });
   }, []);
 
-  const showBlackJack = () => {
-    console.log("blackjack");
-  };
-
   const gameIsFinished = () => {
     socket.emit("finishedGame");
   };
+
+  const showBlackJack = () => {
+    imageRef.current.style.display = "flex";
+
+    if (opacity < 1) {
+      setOpacity(opacity + 0.1);
+    }
+
+    if (opacity >= 1) {
+      setTimeout(() => {
+        setOpacity(0);
+        imageRef.current.style.display = "none";
+        setShowFireAnimation(true);
+      }, 500);
+    }
+  };
+
+  useEffect(() => {
+    if (opacity >= 0.1) {
+      setTimeout(() => showBlackJack(), 100);
+    }
+  }, [opacity]);
 
   useEffect(() => {
     socket.on("gameFinished", (data) => {
       switch (data._results) {
         case "bothLose":
-          console.log("both lose");
+          setResult("Both users LOST!!");
           break;
         case "bothWin":
-          console.log("both win");
+          setResult("Both users WON!!");
           break;
         case "p1Win":
-          console.log("p1 win");
+          setResult(
+            data._users[0]._nickName + " WON!! - " + data._users[0]._score
+          );
           break;
         case "p2Win":
-          console.log("p2 win");
+          setResult(
+            data._users[1]._nickName + " WON!! - " + data._users[1]._score
+          );
           break;
       }
     });
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     socket.on("universalError", (data) => {
@@ -92,6 +119,19 @@ function Game() {
 
   return (
     <div className="game-page-wrapper">
+      <div className="full-screen-animation">
+        <img
+          id="blackJackImage"
+          src={BlackJackImage}
+          ref={imageRef}
+          style={{ opacity: opacity }}
+        ></img>
+      </div>
+      {result && (
+        <div className="full-screen-results">
+          <h1>{result}</h1>
+        </div>
+      )}
       <div id="player-one-board" className="player-board-wrapper">
         {users[0] &&
           users[0]._cards &&
@@ -108,6 +148,7 @@ function Game() {
                   users[0]._id === reduxUserId ||
                   card._rank === "A"
                 }
+                showFire={users[0]._score === 21 && showFireAnimation}
               />
             );
           })}
@@ -162,6 +203,7 @@ function Game() {
                   users[1]._id === reduxUserId ||
                   card._rank === "A"
                 }
+                showFire={users[1]._score === 21 && showFireAnimation}
               />
             );
           })}

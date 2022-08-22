@@ -47,6 +47,7 @@
       #_checkbox:checked + label {
         background-color: #07d410;
         box-shadow: 0 0 10px #92ff97;
+        pointer-events: none;
       }
 
       #_checkbox:checked + label:before {

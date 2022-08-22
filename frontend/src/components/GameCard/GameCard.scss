@@ -9,8 +9,17 @@
   width: 250px;
   min-width: 250px;
   height: 325px;
-  margin: 0 20px;
+  margin: auto 20px;
   padding: 6px;
+  position: relative;
+
+  .fire-animation-wrapper {
+    position: absolute;
+    bottom: 34px;
+    z-index: 2;
+    left: 22px;
+    transform: rotate3d(1, 1, 1, 27deg);
+  }
 
   .mid-border {
     border: 6px solid #de9b72;
