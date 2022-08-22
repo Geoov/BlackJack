@@ -21,8 +21,6 @@ export function socketRoutes(app, io) {
         return;
       }
 
-      console.log('created');
-
       let user: User = new User(uuidv4().substring(0, 2), data.nickName);
       let gameCode = uuidv4().substring(0, 4);
       game = new Game(gameCode);
@@ -51,8 +49,6 @@ export function socketRoutes(app, io) {
         return;
       }
 
-      console.log('joined');
-
       let user = new User(uuidv4().substring(0, 2), data.nickName);
       game.users.push(user);
 
@@ -77,7 +73,7 @@ export function socketRoutes(app, io) {
 
     socket.on("toggleReadyState", (data) => {
       if (!data.id) {
-        universalError("This user doesn't exists");
+        universalError("This user doesn't exist");
         return;
       }
 
@@ -89,7 +85,7 @@ export function socketRoutes(app, io) {
       let user = game.users.find((u) => u.id === data.id);
 
       if (!user) {
-        universalError("This user doesn't exists in the current game");
+        universalError("This user doesn't exist in the current game");
         return;
       }
 
@@ -107,6 +103,15 @@ export function socketRoutes(app, io) {
         return;
       }
 
+      game.users = [];
+
+      let user1 = new User('tt', 'user1')
+      user1.ready = true;
+      let user2 = new User('qq', 'user2')
+      user2.ready = true;
+      game.users.push(user1);
+      game.users.push(user2);
+
       io.emit("gameUsers", {
         _gameUsers: game.users
       })
@@ -115,19 +120,19 @@ export function socketRoutes(app, io) {
 
     socket.on("drawCard", (data) => {
       if (!data.id) {
-        universalError("This user doesn't exists");
+        universalError("This user doesn't exist");
         return;
       }
 
       let user = game.users.find((u) => u.id === data.id);
 
       if (!user) {
-        universalError("This user doesn't exists in the current game");
+        universalError("This user doesn't exist in the current game");
         return;
       }
 
       if (user.finished === true) {
-        socket.emit('finished');
+        socket.emit('finishedDrawing');
         return;
       }
 
@@ -142,25 +147,27 @@ export function socketRoutes(app, io) {
       user.cards.push(card);
       user.computeScore();
 
+
       if (user.score >= 21) {
         user.finished = true;
       }
 
       io.emit("gameUsers", {
-        _gameUsers: game.users
+        _gameUsers: game.users,
+        _blackjack: user.score === 21
       })
     })
 
     socket.on("stopDrawing", (data) => {
       if (!data.id) {
-        universalError("This user doesn't exists");
+        universalError("This user doesn't exist");
         return;
       }
 
       let user = game.users.find((u) => u.id === data.id);
 
       if (!user) {
-        universalError("This user doesn't exists in the current game");
+        universalError("This user doesn't exist in the current game");
         return;
       }
 
@@ -171,6 +178,43 @@ export function socketRoutes(app, io) {
       })
     })
 
+    socket.on("finishedGame", () => {
+      if (!game.users[0].finished && !game.users[1].finished) {
+        universalError("The game isn't finished yet");
+        return;
+      }
+
+      let result = '';
+      let p1Score = game.users[0].score;
+      let p2Score = game.users[1].score;
+
+      if (p1Score > 21 && p2Score > 21) {
+        result = 'bothLose'; // equal
+
+        if (p1Score > p2Score) result = 'p2Win';
+
+        if (p1Score < p2Score) result = 'p1Win';
+
+      } else if (p1Score <= 21 && p2Score > 21) {
+        result = 'p1Win';
+      } else if (p2Score <= 21 && p1Score > 21) {
+        result = 'p2Win'
+      } else {
+
+        if (p1Score > p2Score) {
+          result = 'p1Win';
+        } else if (p2Score > p1Score) {
+          result = 'p2Win';
+        } else {
+          result = 'bothWin';
+        }
+      }
+
+      io.emit("gameFinished", {
+        _results: result
+      })
+
+    })
 
     function universalError(message) {
       socket.emit("universalError", { message });
