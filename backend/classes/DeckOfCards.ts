@@ -3,7 +3,12 @@ import { Card, Suite, Rank } from "./Card";
 export class DeckOfCards {
 
   private _deck: Card[] = [];
-  _suites: Suite[] = ["clubs", "diamonds", "hearts", "spades"];
+  _suites: Suite[] = [
+    "clubs",
+    "diamonds",
+    "hearts",
+    "spades"
+  ];
   _ranks: Rank[] = [
     "2",
     "3",

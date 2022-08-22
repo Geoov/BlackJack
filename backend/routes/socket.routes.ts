@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Card } from '../classes/Card';
+import { DeckOfCards } from '../classes/DeckOfCards';
 import { Game } from '../classes/Game';
 import { User } from '../classes/User';
 
 export function socketRoutes(app, io) {
 
-  var game = new Game('test');
-
+  var game = new Game();
 
   io.on("connection", (socket) => {
     console.log("New client connected");
@@ -18,6 +18,11 @@ export function socketRoutes(app, io) {
     socket.on('createGame', (data) => {
       if (!data.nickName) {
         universalError("NickName null");
+        return;
+      }
+
+      if (game.gameCode) {
+        universalError("Game already exist");
         return;
       }
 
@@ -102,15 +107,6 @@ export function socketRoutes(app, io) {
 
         return;
       }
-
-      game.users = [];
-
-      let user1 = new User('tt', 'user1')
-      user1.ready = true;
-      let user2 = new User('qq', 'user2')
-      user2.ready = true;
-      game.users.push(user1);
-      game.users.push(user2);
 
       io.emit("gameUsers", {
         _gameUsers: game.users
@@ -211,8 +207,11 @@ export function socketRoutes(app, io) {
       }
 
       io.emit("gameFinished", {
-        _results: result
+        _results: result,
+        _users: game.users
       })
+
+      game.gameCode = '';
 
     })
 
