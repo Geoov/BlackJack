@@ -5,26 +5,35 @@ import "./UserCard.scss";
 const UserCard = ({ id, index, name, isReady, updateIsReady }) => {
   const reduxUserId = useSelector((state) => state.user.userId);
 
-  const changeReadyState = () => {
+  const changeReadyState = (event) => {
     updateIsReady(index, isReady);
   };
 
   return (
     <div className="user-card">
-      <p>{reduxUserId}</p>
-      <p className="name mb-0">{name}</p>
-      {id === reduxUserId ? (
-        <span>
-          <input
-            type="checkbox"
-            id="ready-checkbox"
-            onChange={changeReadyState}
-          ></input>
-          <p>{isReady ? "I'm ready" : "I'm not ready"}</p>
-        </span>
-      ) : (
-        <span>{isReady ? "ready" : "stand-by"}</span>
-      )}
+      <div className="name-wrapper mb-0">
+        <p>{name}</p>
+      </div>
+      <div className="d-flex flex-row">
+        {id === reduxUserId ? (
+          <div className="current-user">
+            <p>{isReady ? "I'm ready" : "I'm not ready"}</p>
+
+            <div className="checkbox-wrapper">
+              <input
+                type="checkbox"
+                id="_checkbox"
+                onChange={changeReadyState}
+              ></input>
+              <label htmlFor="_checkbox">
+                <div id="tick_mark"></div>
+              </label>
+            </div>
+          </div>
+        ) : (
+          <div className="another-user">{isReady ? "Ready" : "Stand-By"}</div>
+        )}
+      </div>
     </div>
   );
 };

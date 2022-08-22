@@ -5,6 +5,7 @@
   @include full-row-direction;
   @include align-center-hv;
   height: 100%;
+  background-color: $background-color;
 
   .card-wrapper {
     @include column-direction;
@@ -12,8 +13,41 @@
     align-items: center;
     width: 500px;
     height: 75%;
-    background-color: $background-color;
-    border: 1px solid #30363d;
+    background-color: $dark-grey;
+    border: 2px solid $light-grey;
     border-radius: 6px;
+
+    .MuiFormLabel-root {
+      color: $light-orange;
+      opacity: 0.5;
+    }
+
+    .MuiInputBase-root {
+      color: $light-orange;
+      border-bottom: 1px solid $light-orange;
+      opacity: 0.75;
+    }
+
+    .MuiInputBase-root:after {
+      border-bottom: 1px solid $light-orange;
+    }
+
+    .buttons-wrapper {
+      @include column-direction;
+
+      button.MuiButtonBase-root {
+        border-radius: 0;
+        width: 100%;
+        height: 40px;
+      }
+
+      button.MuiButton-containedPrimary {
+        background-color: $light-purple;
+      }
+
+      button.MuiButton-containedSecondary {
+        background-color: $light-blue;
+      }
+    }
   }
 }

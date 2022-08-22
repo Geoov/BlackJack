@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useSelector } from "react-redux";
 import { SocketContext } from "../../context/socket";
 import "./Lobby.scss";
 import UserCard from "../UserCard/UserCard";
+import horizontallyDecoration from "../../../src/assets/images/horizontallyDecoration.png";
 
 const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 const Lobby = ({ currentGameCode, onStartedGame }) => {
   const socket = useContext(SocketContext);
-  const reduxGameCode = useSelector((state) => state.game.gameId);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    if (!currentGameCode) return;
+    if (!currentGameCode) currentGameCode = "test";
     socket.emit("getUsers", { gameCode: currentGameCode });
   }, [currentGameCode, socket]);
 
@@ -27,7 +26,7 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
   const toggleReadyState = (index, isReady) => {
     socket.emit("toggleReadyState", {
       id: users[index]._id,
-      gameCode: reduxGameCode,
+      gameCode: currentGameCode,
       readyState: !isReady,
     });
   };
@@ -50,27 +49,44 @@ const Lobby = ({ currentGameCode, onStartedGame }) => {
 
   useEffect(() => {
     socket.on("universalError", (data) => {
-      alert(data.message);
+      console.error(data.message);
     });
   }, []);
 
   return (
     <div className="lobby-page-wrapper">
-      <div className="choose"></div>
-      <h1>gamecode - {currentGameCode}</h1>
-      <div className="users-card-wrapper">
-        {users.map((user, index) => {
-          return (
-            <UserCard
-              key={user._id}
-              id={user._id}
-              index={index}
-              name={user._nickName}
-              isReady={user._ready}
-              updateIsReady={toggleReadyState}
-            />
-          );
-        })}
+      <div className="mid-border">
+        <div className="inner-border">
+          <img
+            className="horizontally-decoration horizontally-decoration-top"
+            src={horizontallyDecoration}
+          ></img>
+          <img
+            className="horizontally-decoration horizontally-decoration-bottom"
+            src={horizontallyDecoration}
+          ></img>
+
+          <div className="lobby-content-wrapper">
+            <div className="game-code-wrapper">
+              <p>Gamecode: {currentGameCode}</p>
+            </div>
+
+            <div className="users-card-wrapper">
+              {users.map((user, index) => {
+                return (
+                  <UserCard
+                    key={user._id}
+                    id={user._id}
+                    index={index}
+                    name={user._nickName}
+                    isReady={user._ready}
+                    updateIsReady={toggleReadyState}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

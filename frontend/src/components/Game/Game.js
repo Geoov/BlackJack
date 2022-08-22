@@ -25,7 +25,17 @@ function Game() {
       if (!equals(users, data._gameUsers)) {
         setUsers(data._gameUsers);
       }
+
+      if (
+        data._gameUsers[0]._finished === true &&
+        data._gameUsers[1]._finished === true
+      ) {
+        gameIsFinished();
+      }
+
+      if (data._blackjack) showBlackJack();
     });
+
     setCurrenUserIndex(users.findIndex((user) => user._id === reduxUserId));
   }, [users]);
 
@@ -42,16 +52,43 @@ function Game() {
   };
 
   useEffect(() => {
-    socket.on("universalError", (data) => {
-      console.error(data.message);
+    socket.on("finishedDrawing", () => {
+      console.error("You can't draw any more cards");
+    });
+  }, []);
+
+  const showBlackJack = () => {
+    console.log("blackjack");
+  };
+
+  const gameIsFinished = () => {
+    socket.emit("finishedGame");
+  };
+
+  useEffect(() => {
+    socket.on("gameFinished", (data) => {
+      switch (data._results) {
+        case "bothLose":
+          console.log("both lose");
+          break;
+        case "bothWin":
+          console.log("both win");
+          break;
+        case "p1Win":
+          console.log("p1 win");
+          break;
+        case "p2Win":
+          console.log("p2 win");
+          break;
+      }
     });
   }, []);
 
   useEffect(() => {
-    socket.on("finished", () => {
-      console.error("You can't draw any more cards");
+    socket.on("universalError", (data) => {
+      console.error(data.message);
     });
-  });
+  }, []);
 
   return (
     <div className="game-page-wrapper">
@@ -89,9 +126,7 @@ function Game() {
           {currentUserIndex !== -1 && (
             <>
               <p>Score: {users[currentUserIndex]._score}</p>
-              <div className="player-interaction">
-                <p>Choose</p>
-              </div>
+
               <p>
                 Status:{" "}
                 {users[currentUserIndex]._finished === false
