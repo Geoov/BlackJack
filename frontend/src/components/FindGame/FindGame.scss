@@ -32,6 +32,13 @@
       border-bottom: 1px solid $light-orange;
     }
 
+    #material-select.MuiFormControl-root {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      margin-top: 32px;
+    }
+
     .buttons-wrapper {
       @include column-direction;
 

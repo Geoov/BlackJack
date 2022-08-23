@@ -96,10 +96,14 @@ function Game() {
     socket.on("gameFinished", (data) => {
       switch (data._results) {
         case "bothLose":
-          setResult("Both players LOST!!");
+          setResult(
+            "Both players LOST!! - " + data._users[0]._score + " points"
+          );
           break;
         case "bothWin":
-          setResult("Both players WON!!");
+          setResult(
+            "Both players WON!! - " + data._users[0]._score + " points"
+          );
           break;
         case "p1Win":
           setResult(

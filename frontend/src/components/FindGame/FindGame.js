@@ -3,12 +3,17 @@ import { SocketContext } from "../../context/socket";
 import "./FindGame.scss";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
 import useNotification from "../Notification/useNotification";
 
 function FindGame({ onJoinedGame }) {
   const socket = useContext(SocketContext);
   const [nickName, setNickName] = useState("");
   const [gameCode, setGameCode] = useState("");
+  const [gameMode, setGameMode] = useState("default");
   const [msg, sendNotification] = useNotification();
 
   const handleNickNameInputChange = (event) => {
@@ -19,6 +24,10 @@ function FindGame({ onJoinedGame }) {
   const handleGameCodeInputChange = (event) => {
     event.persist();
     setGameCode(event.target.value);
+  };
+
+  const changeGameMode = (event) => {
+    setGameMode(event.target.value);
   };
 
   useEffect(() => {
@@ -50,7 +59,7 @@ function FindGame({ onJoinedGame }) {
       });
     }
 
-    socket.emit("createGame", { nickName });
+    socket.emit("createGame", { nickName, gameMode });
   };
 
   useEffect(() => {
@@ -78,6 +87,19 @@ function FindGame({ onJoinedGame }) {
             value={gameCode}
             onChange={handleGameCodeInputChange}
           />
+          <FormControl
+            id="material-select"
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+          >
+            <InputLabel id="gamemode">gamemode</InputLabel>
+            <Select value={gameMode} onChange={changeGameMode} label="gamemode">
+              <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="lowBets">Low Bets</MenuItem>
+              <MenuItem value="mediumBets">Medium Bets</MenuItem>
+              <MenuItem value="blackjack">BlackJack</MenuItem>
+            </Select>
+          </FormControl>
         </div>
         <div className="buttons-wrapper">
           <Button variant="contained" color="primary" onClick={joinGame}>
