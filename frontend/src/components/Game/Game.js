@@ -96,30 +96,16 @@ function Game() {
     socket.on("gameFinished", (data) => {
       switch (data._results) {
         case "bothLose":
-          setResult(
-            "Both players LOST!! - " + data._users[0]._score + " points"
-          );
+          setResult("Both players LOST!!");
           break;
         case "bothWin":
-          setResult(
-            "Both players WON!! - " + data._users[0]._score + " points"
-          );
+          setResult("Both players WON!!");
           break;
         case "p1Win":
-          setResult(
-            data._users[0]._nickName +
-              " WON!! - " +
-              data._users[0]._score +
-              " points"
-          );
+          setResult(data._users[0]._nickName + " WON!!");
           break;
         case "p2Win":
-          setResult(
-            data._users[1]._nickName +
-              " WON!! - " +
-              data._users[1]._score +
-              " points"
-          );
+          setResult(data._users[1]._nickName + " WON!!");
           break;
       }
       finishGameAudio.play();
@@ -134,6 +120,10 @@ function Game() {
     });
   }, [socket]);
 
+  const restartGame = () => {
+    window.location.reload(false);
+  };
+
   return (
     <div className="game-page-wrapper">
       <div className="full-screen-animation">
@@ -145,8 +135,20 @@ function Game() {
         ></img>
       </div>
       {result && (
-        <div className="full-screen-results">
-          <h1>{result}</h1>
+        <div className="full-screen-results-wrapper">
+          <div className="full-screen-results">
+            <p>
+              {users[0]._nickName}: {users[0]._score} points
+            </p>
+            <h1>{result}</h1>
+            <p>
+              {users[1]._nickName}: {users[1]._score} points
+            </p>
+
+            <p className="restart-button" onClick={restartGame}>
+              RESTART
+            </p>
+          </div>
         </div>
       )}
       <div id="player-one-board" className="player-board-wrapper">

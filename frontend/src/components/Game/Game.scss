@@ -24,10 +24,11 @@
     }
   }
 
-  .full-screen-results {
+  .full-screen-results-wrapper {
     position: absolute;
     @include row-direction;
-    @include align-center-hv;
+    align-items: center;
+    justify-content: space-between;
     left: 12.5%;
     z-index: 2;
     width: fit-content;
@@ -35,10 +36,32 @@
     padding: 50px;
     width: 75%;
     border-radius: 50px;
+    z-index: 3;
+
+    .full-screen-results {
+      position: relative;
+      @include full-column-direction;
+      @include align-center-hv;
+    }
+
+    .restart-button {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      cursor: pointer;
+    }
 
     h1 {
       color: white;
       font-size: 64px;
+      margin-bottom: 0;
+      padding: 20px 0;
+    }
+
+    p {
+      color: white;
+      font-size: 24px;
+      margin-bottom: 0;
     }
   }
 
