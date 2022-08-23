@@ -4,11 +4,12 @@ import { User } from "./User";
 export class Game {
 
   private _gameCode: string;
-  private _deckOfCards: DeckOfCards = new DeckOfCards();
+  private _deckOfCards: DeckOfCards;
   private _users: User[] = [];
 
-  constructor(gameCode?: string) {
+  constructor(gameCode?: string, gameMode?: string) {
     this._gameCode = gameCode ?? '';
+    this._deckOfCards = new DeckOfCards(gameMode);
   }
 
   public get gameCode(): string {

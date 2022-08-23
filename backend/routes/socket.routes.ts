@@ -21,7 +21,9 @@ export function socketRoutes(app, io) {
 
       let user: User = new User(uuidv4().substring(0, 2), data.nickName);
       let gameCode = uuidv4().substring(0, 4);
-      game = new Game(gameCode);
+
+      game = new Game(gameCode, data.gameMode);
+
       game.users.push(user);
 
       // I decided to not send the game because

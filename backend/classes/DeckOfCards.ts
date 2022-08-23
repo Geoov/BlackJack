@@ -9,24 +9,59 @@ export class DeckOfCards {
     "hearts",
     "spades"
   ];
-  _ranks: Rank[] = [
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "J",
-    "Q",
-    "K",
-    "A",
-  ];
+  _ranks: Rank[] = [];
+  gameMode: string = "default";
 
 
-  constructor() {
+  constructor(gameMode?: string) {
+    if (!gameMode) gameMode = 'default'
+
+    switch (gameMode) {
+      case "blackjack":
+        this._ranks = [
+          "J",
+          "Q",
+          "K",
+          "A",
+        ]
+        break;
+      case "lowBets":
+        this._ranks = [
+          "A",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+        ]
+        break;
+      case "mediumBets":
+        this._ranks = [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ]
+        break;
+      default:
+        this._ranks = [
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "J",
+          "Q",
+          "K",
+          "A",
+        ];
+    }
+
     this.buildDeck();
   }
 
